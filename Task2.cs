@@ -9,7 +9,11 @@ namespace CodeRefactoring
     /// This task covers:
     /// 1. Extract Interface
     /// </summary>
-    public class EmailService
+    public interface INotificationService
+    {
+        void SendNotification(string userId, string message);
+    }
+    public class EmailService : INotificationService
     {
         public void SendNotification(string userId, string message)
         {
@@ -18,7 +22,7 @@ namespace CodeRefactoring
         }
     }
 
-    public class SmsService
+    public class SmsService : INotificationService
     {
         public void SendNotification(string userId, string message)
         {
@@ -26,7 +30,7 @@ namespace CodeRefactoring
             Console.WriteLine($"Sending SMS notification to user {userId}: {message}");
         }
     }
-    public class PushNotificationService
+    public class PushNotificationService : INotificationService
     {
         public void SendNotification(string userId, string message)
         {
@@ -38,34 +42,20 @@ namespace CodeRefactoring
     public class User
     {
         private string userId;
-        private EmailService emailService;
-        private SmsService smsService;
-        private PushNotificationService pushNotificationService;
+        private INotificationService notificationService;
+        
 
-
-        public User(string userId, EmailService emailService)
+        public User(string userId, INotificationService Service)
         {
             this.userId = userId;
-            this.emailService = emailService;
+           this.notificationService = Service;
         }
-        public User(string userId, SmsService smsService)
-        {
-            this.userId = userId;
-            this.smsService = smsService;
-        }
-        public User(string userId, PushNotificationService pushNotificationService)
-        {
-            this.userId = userId;
-            this.pushNotificationService = pushNotificationService;
-        }
+        
         public void Notify(string message)
         {
-            if (emailService != null)
-                emailService.SendNotification(userId, message);
-            else if (smsService != null)
-                smsService.SendNotification(userId, message);
-            else if (pushNotificationService != null)
-                pushNotificationService.SendNotification(userId, message);
+            if (notificationService != null)
+                notificationService.SendNotification(userId, message);
+           
             else
                 Console.WriteLine("No notification chanel provided");
         }
