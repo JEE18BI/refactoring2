@@ -12,7 +12,7 @@ namespace CodeRefactoring
     /// 3. Replace Conditional With Guard Clause
     /// </summary>
     public class Task1
-    {
+    {   public int maxattempts = 3;
         public int CurrentAttempt { get; private set; } = 0;
         public bool IsLockedOut { get; private set; }
 
